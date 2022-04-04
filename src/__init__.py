@@ -4,6 +4,9 @@ from flask import Flask,jsonify
 import os
 from src.auth import auth
 from src.bookmarks import bookmarks
+from src.database import engine
+# from src.database import db
+from src import models
 
 def create_app(test_config=None):
 
@@ -18,6 +21,11 @@ def create_app(test_config=None):
 
     else:
         app.config.from_mapping(test_config)
+
+
+    # db.app=app
+
+    models.Base.metadata.create_all(bind=engine)
 
     app.register_blueprint(auth)
     app.register_blueprint(bookmarks)
