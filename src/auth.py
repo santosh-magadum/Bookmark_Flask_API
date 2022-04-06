@@ -7,6 +7,13 @@ from flask_pydantic import validate
 
 from pydantic import BaseModel
 
+from src import models
+
+from sqlalchemy.orm import Session
+
+from sqlalchemy.sql.expression import select
+from src import database
+
 
 auth=Blueprint("auth",__name__,url_prefix="/pi/v1/auth")
 
@@ -18,11 +25,37 @@ class userCreate(BaseModel):
 
 @auth.post('/register')
 @validate(body=userCreate)
-def register():
+def register(db=next(database.get_db())):
     # try:
-    user=userCreate(**request.json)
-    print(user.username)
-    print(user.password)
+    # user=userCreate(**request.json)
+
+
+    
+    
+
+    new_user=models.User(**request.json)
+    # print(new_user)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"id":new_user.id,"username":new_user.username,"email":new_user.email}
+
+    
+
+
+
+    
+    
+    
+    
+
+
+    
+
+
+
+
+
     # except Exception as e:
         # print("error is",dir(e.json))
         # print("error is",e.json.__str__)
@@ -44,7 +77,7 @@ def register():
     # print(password)
 
     # return jsonify(user)
-    print(request)
+    # print(request)
     return jsonify({'error':'password is too short'})
     # ,HTTP_400_BAD_REQUEST
 

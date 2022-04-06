@@ -8,13 +8,15 @@ from sqlalchemy import Column,String,Integer,Boolean,DateTime,ForeignKey
 from sqlalchemy.sql.functions import now
 from sqlalchemy.sql.expression import null,text
 
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship,backref
 
 from sqlalchemy.orm import validates
 
 import string
 
 import random
+
+import datetime 
 
 
 
@@ -28,14 +30,13 @@ class User(Base):
     email=Column(String(120),unique=True,nullable=False)
     password= Column(String(500),nullable=False)
     created_at=Column(DateTime(timezone=True),nullable=False,server_default=text('now()'))
-    updated_at=Column(DateTime(timezone=True),nullable=False,onupdate=text('now()'))
-
-    bookmarks=relationship("bookmarks",backref="users")
+    updated_at=Column(DateTime(timezone=True),nullable=False,server_default=text('now()') ,onupdate=datetime.datetime.now)
+    bookmarks=relationship("Bookmark",backref="users")
 
 
 
     def __repr__(self):
-        return "User >>> {self.username}"
+        return f"User >>> {self.username}"
 
 
     @validates('email')
@@ -63,7 +64,7 @@ class Bookmark(Base):
     
 
     def __repr__(self):
-        return "Bookmark >>> {self.url}"
+        return f"Bookmark >>> {self.url}"
 
 
     def generate_short_characters(self):
