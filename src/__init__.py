@@ -7,6 +7,7 @@ from src.bookmarks import bookmarks
 from src.database import engine
 # from src.database import db
 from src import models
+# from flask_jwt_extended import JWTManager
 
 def create_app(test_config=None):
 
@@ -17,6 +18,8 @@ def create_app(test_config=None):
 
         app.config.from_mapping(
                 SECRETE_KEY=os.environ.get("SECRETE_KEY"),
+                JWT_SECRET_KEY=os.environ.get("JWT_SECRET_KEY"),
+                # SECRETE_KEY=os.environ.get("SECRET_KEY"),
         )
 
     else:
@@ -26,6 +29,8 @@ def create_app(test_config=None):
     # db.app=app
 
     models.Base.metadata.create_all(bind=engine)
+
+    # JWTManager(app)
 
     app.register_blueprint(auth)
     app.register_blueprint(bookmarks)

@@ -42,7 +42,7 @@ class User(Base):
     @validates('email')
     def validate_email(self,key,value):
         if '@' not in value:
-            raise ValueError("failed simple email validator")
+            raise ValueError("Email is not valid")
         return value
 
 
